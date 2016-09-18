@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Kalkulator Rat</string>
+    <string name="wibor">WIBOR: </string>
+    <string name="WiborBtn">Pobierz WIBOR</string>
+</resources>
