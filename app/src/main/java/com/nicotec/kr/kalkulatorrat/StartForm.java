@@ -12,6 +12,8 @@ import android.provider.DocumentsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -39,14 +41,30 @@ import java.util.concurrent.ExecutionException;
 
 public class StartForm extends AppCompatActivity {
 
-    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_form);
+        final EditText procBaza = (EditText)findViewById(R.id.ProcBaza);
+        final EditText procSum = (EditText)findViewById(R.id.ProcSum);
+        final EditText tv = (EditText) findViewById(R.id.editText);
 
-        loading = (ProgressBar) findViewById(R.id.progressBar);
+        procBaza.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                procSum.setText(Integer.parseInt(procBaza.getText().toString()) + Integer.parseInt(tv.getText().toString()));
+            }
+        });
         Button btn = (Button)findViewById(R.id.DownBtn);
 
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -95,16 +113,21 @@ public class StartForm extends AppCompatActivity {
         }
     }
 
+    public void OnWynikBtnClick(View view)
+    {
+
+    }
+
     protected class GetSite extends AsyncTask<String, Void, String>
     {
         @Override
         protected void onPreExecute(){
-            loading.setVisibility(View.VISIBLE);
+
         }
 
         @Override
         protected void onPostExecute(String result){
-            loading.setVisibility(View.GONE);
+
         }
 
         @Override

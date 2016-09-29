@@ -2,4 +2,9 @@
     <string name="app_name">Kalkulator Rat</string>
     <string name="wibor">WIBOR: </string>
     <string name="WiborBtn">Pobierz WIBOR</string>
+    <string name="ProcLabel">Procent bazowy: </string>
+    <string name="IleRatLabel">Ilość rat:</string>
+    <string name="DataRaty">Data pierwszej raty:</string>
+    <string name="KwotaLabel">Kwota:</string>
+    <string name="WynikBtn">Oblicz</string>
 </resources>
