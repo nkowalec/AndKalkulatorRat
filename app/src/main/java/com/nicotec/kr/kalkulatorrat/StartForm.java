@@ -1,22 +1,21 @@
 package com.nicotec.kr.kalkulatorrat;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.provider.DocumentsContract;
+import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,18 +35,37 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 public class StartForm extends AppCompatActivity {
 
+    EditText procBaza;
+    EditText procSum;
+    EditText kwotaEdit;
+    EditText ileRatEdit;
+    EditText dataEdit;
+    EditText wynikEdit;
+    EditText rataEdit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_form);
-        final EditText procBaza = (EditText)findViewById(R.id.ProcBaza);
-        final EditText procSum = (EditText)findViewById(R.id.ProcSum);
+        procBaza = (EditText)findViewById(R.id.ProcBaza);
+        procSum = (EditText)findViewById(R.id.ProcSum);
+        kwotaEdit = (EditText) findViewById(R.id.editText2);
         final EditText tv = (EditText) findViewById(R.id.editText);
+        ileRatEdit = (EditText) findViewById(R.id.IloscRat);
+        dataEdit = (EditText) findViewById(R.id.dateLabel);
+        wynikEdit = (EditText) findViewById(R.id.WynikEdit);
+        rataEdit = (EditText) findViewById(R.id.RataEdit);
+    //    dateLabel = (EditText) findViewById(R.id.dateLabel);
 
         procBaza.addTextChangedListener(new TextWatcher() {
             @Override
@@ -62,9 +80,39 @@ public class StartForm extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                procSum.setText(Integer.parseInt(procBaza.getText().toString()) + Integer.parseInt(tv.getText().toString()));
+                if(!procBaza.getText().toString().equals("") && !tv.getText().toString().equals(""))
+                {
+                    Double baza = Double.parseDouble(procBaza.getText().toString().replace(',', '.'));
+                    Double wibor = Double.parseDouble(tv.getText().toString().replace(',', '.'));
+                    Double sum = baza + wibor;
+                    procSum.setText( sum.toString() );
+                }
             }
         });
+
+        tv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!procBaza.getText().toString().equals("") && !tv.getText().toString().equals(""))
+                {
+                    Double baza = Double.parseDouble(procBaza.getText().toString().replace(',', '.'));
+                    Double wibor = Double.parseDouble(tv.getText().toString().replace(',', '.'));
+                    Double sum = baza + wibor;
+                    procSum.setText( sum.toString() );
+                }
+            }
+        });
+
         Button btn = (Button)findViewById(R.id.DownBtn);
 
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -93,10 +141,15 @@ public class StartForm extends AppCompatActivity {
 
     }
 
+    public void OnDateEditClick(View v){
+        MyDatePicker picker = new MyDatePicker();
+        picker.show(getFragmentManager(), "DatePicker");
+    }
+
     public void OnDownBtnClick(View view){
         try {
             EditText tv = (EditText) findViewById(R.id.editText);
-            tv.setText("???");
+           // tv.setText("???");
             String dane = new GetSite().execute("http://wibor3m.pl").get();
             Document html = Jsoup.parse(dane);
             Elements elems = html.getElementsByClass("Value");
@@ -113,9 +166,39 @@ public class StartForm extends AppCompatActivity {
         }
     }
 
-    public void OnWynikBtnClick(View view)
-    {
+    public void OnWynikBtnClick(View view) throws ParseException {
+        Double kwota = Double.parseDouble(kwotaEdit.getText().toString().replace(',', '.').replace(" ", ""));
+        int ileRat = Integer.parseInt(ileRatEdit.getText().toString());
+        Double procent = Double.parseDouble(procSum.getText().toString()) / 100;
 
+        Double rataBezProc = kwota / ileRat;
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date dataRaty = df.parse(dataEdit.getText().toString());
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date(System.currentTimeMillis()));
+        int currentYear = c.get(Calendar.YEAR);
+        int currentMonth = c.get(Calendar.MONTH);
+
+        c.setTime(dataRaty);
+        int rataYear = c.get(Calendar.YEAR);
+        int rataMonth = c.get(Calendar.MONTH);
+
+        Integer numerRaty = ((currentYear - rataYear) * 12 + (currentMonth - rataMonth)) + 1;
+
+        Double kwotaTmp = kwota;
+        Double rata = 0.0;
+
+        for( int i = 0; i < numerRaty; i++)
+        {
+            rata = ((kwotaTmp * procent) / 12) + rataBezProc;
+            kwotaTmp -= rataBezProc;
+        }
+
+        DecimalFormat dformt = new DecimalFormat("0.00");
+        wynikEdit.setText(dformt.format(rata));
+
+        rataEdit.setText(numerRaty.toString());
     }
 
     protected class GetSite extends AsyncTask<String, Void, String>

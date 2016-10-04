@@ -7,4 +7,6 @@
     <string name="DataRaty">Data pierwszej raty:</string>
     <string name="KwotaLabel">Kwota:</string>
     <string name="WynikBtn">Oblicz</string>
+    <string name="NrRatyLabel">Numer Raty</string>
+    <string name="WynikLabel">Wysokość Raty</string>
 </resources>
