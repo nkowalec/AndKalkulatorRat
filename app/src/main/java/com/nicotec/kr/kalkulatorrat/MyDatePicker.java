@@ -35,7 +35,7 @@ public class MyDatePicker extends DialogFragment implements DatePickerDialog.OnD
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         EditText dateEdit = (EditText) getActivity().findViewById(R.id.dateLabel);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         c.set(year, monthOfYear, dayOfMonth);
 

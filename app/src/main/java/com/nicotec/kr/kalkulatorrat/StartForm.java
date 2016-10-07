@@ -2,9 +2,12 @@ package com.nicotec.kr.kalkulatorrat;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
@@ -12,6 +15,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -90,6 +96,8 @@ public class StartForm extends AppCompatActivity {
             }
         });
 
+        initDefaultValues();
+
         tv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,6 +149,14 @@ public class StartForm extends AppCompatActivity {
 
     }
 
+    private void initDefaultValues() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        kwotaEdit.setText(sp.getString(getString(R.string.P_KWOTA), "35 000"));
+        procBaza.setText(sp.getString(getString(R.string.P_PROCENT), "4.29"));
+        ileRatEdit.setText(sp.getString(getString(R.string.P_ILERAT), "48"));
+        dataEdit.setText(sp.getString(getString(R.string.P_DATA), "2016-10-10"));
+    }
+
     public void OnDateEditClick(View v){
         MyDatePicker picker = new MyDatePicker();
         picker.show(getFragmentManager(), "DatePicker");
@@ -172,7 +188,7 @@ public class StartForm extends AppCompatActivity {
         Double procent = Double.parseDouble(procSum.getText().toString()) / 100;
 
         Double rataBezProc = kwota / ileRat;
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         Date dataRaty = df.parse(dataEdit.getText().toString());
         Calendar c = Calendar.getInstance();
@@ -199,6 +215,18 @@ public class StartForm extends AppCompatActivity {
         wynikEdit.setText(dformt.format(rata));
 
         rataEdit.setText(numerRaty.toString());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater i = getMenuInflater();
+        i.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    public void OnMenuSettingsClick(MenuItem item){
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
     }
 
     protected class GetSite extends AsyncTask<String, Void, String>

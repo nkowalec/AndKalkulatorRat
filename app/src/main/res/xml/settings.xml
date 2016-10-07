@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="@string/P_KWOTA"
+        android:title="Kwota domyślna"
+        android:summary="Domyśna kwota do obliczeń"
+        android:inputType="numberDecimal"
+        android:defaultValue="35 000"/>
+    <EditTextPreference
+        android:key="@string/P_PROCENT"
+        android:title="Procent bazowy"
+        android:summary="Domyślny procent bazowy"
+        android:defaultValue="4.29"
+        android:inputType="numberDecimal" />
+    <EditTextPreference
+        android:key="@string/P_ILERAT"
+        android:title="Ilość rat"
+        android:summary="Domyślna ilość rat"
+        android:defaultValue="48"
+        android:inputType="number" />
+    <EditTextPreference
+        android:key="@string/P_DATA"
+        android:title="Data pierwszej raty"
+        android:summary="Domyślna data pierwszej raty do obliczeń"
+        android:defaultValue="2016-10-10"
+        android:inputType="date"/>
+</PreferenceScreen>
